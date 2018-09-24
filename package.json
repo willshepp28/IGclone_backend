@@ -4,8 +4,7 @@
   "description": "instgram clone",
   "main": "app.js",
   "scripts": {
-    "postinstall": "node app.js",
-    "start": "cd ../frontend && ng serve"
+   "start": "node app.js"
   },
   "engines": {
     "node": "9.11.1",
