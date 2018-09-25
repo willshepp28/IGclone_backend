@@ -52,7 +52,7 @@ router.post("/login", (request, response) => {
                 if (user === 0) {
                     response.status(401).send("No user")
                 } else {
-                    let token = jwt.sign({ user }, JWT_SECRET_KEY)
+                    let token = jwt.sign({ user }, process.env.JWT_SECRET)
                     response.status(200).send({ token });
                 }
 
@@ -91,8 +91,8 @@ router.post("/signup", (request, response) => {
 
             console.log(user);
 
-            let token = jwt.sign({ user }, JWT_SECRET_KEY)
-            let payload = jwt.verify(token, JWT_SECRET_KEY);
+            let token = jwt.sign({ user }, process.env.JWT_SECRET)
+            let payload = jwt.verify(token, process.env.JWT_SECRET);
             console.log(payload);
             response.status(200).send({ token });
         })
