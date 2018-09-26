@@ -78,7 +78,7 @@ router.post("/login", (request, response) => {
 
 router.post("/signup", (request, response) => {
 
-
+    console.log(request.body);
 
     var userData = knex("users")
         .insert({
