@@ -4,7 +4,9 @@ jwt = require('jsonwebtoken'),
     knex = require('../db/knex');
 
 
-/*
+
+
+    /*
 |--------------------------------------------------------------------------
 |  Posts Api - Gets posts from all users with all info
 |--------------------------------------------------------------------------
@@ -13,9 +15,6 @@ router.get("/", verifyToken, async (request, response) => {
 
 
 
-    // console.log("************************")
-    // console.log(request.userId);
-    // console.log("************************")
 
     await knex.select("posts.id", "users.id AS userId", "username", "photo", "caption", "profilePic")
         .from("posts")
@@ -36,85 +35,116 @@ router.get("/", verifyToken, async (request, response) => {
 
 
 
-            var savedPost = knex("saved")
-                .where({
-                    userId: request.userId,
-                })
-                .then(savedPost => {
+            async function saved() {
+                var savedPost = await knex("saved")
+                    .where({
+                        userId: request.userId,
+                    })
+                    .then(savedPost => {
 
 
 
 
 
-                    for (let i = 0; i < savedPost.length; i++) {
-                        for (let x = 0; x < post.length; x++) {
+                        for (let i = 0; i < savedPost.length; i++) {
+                            for (let x = 0; x < post.length; x++) {
 
-                            if (savedPost[i].postId === post[x].id) {
-                                post[x].isSaved = true;
-                            }
-                        }
-                    }
-
-                })
-                .catch(error => console.log(error))
-
-
-
-
-
-            // get all likes, match it to post, the push in that posts comments array
-            var allComments = knex.select("comments.id", "comment", "users.id As users_id", "username", "postId", )
-                .from("comments")
-                .innerJoin("users", "comments.userId", "users.id")
-                .then(comment => {
-
-                    console.log(comment);
-
-                    for (let i = 0; i < post.length; i++) {
-
-                        for (let x = 0; x < comment.length; x++) {
-
-                            // console.log("In the for loop inside comments")
-                            // console.log(post[i])
-
-                            if (comment[x].postId === post[i].id) {
-                                // console.log(`Post username: ${post[i].username}`)
-
-                                // adds username from posts to 
-                                // comment[x].username = post[i].username;
-                                console.log("____________");
-                                console.log(comment[x]);
-                                console.log("____________");
-                                // pushs comment array to the users array
-                                post[i].comments.push(comment[x]);
+                                if (savedPost[i].postId === post[x].id) {
+                                    post[x].isSaved = true;
+                                }
                             }
                         }
 
-                    }
-                })
+                    })
+                    .catch(error => console.log(error))
+            }
 
+            saved();
+
+
+
+
+
+
+
+
+            async function comments() {
+
+
+                // get all likes, match it to post, the push in that posts comments array
+                var allComments = await knex.select("comments.id", "comment", "users.id As users_id", "username", "postId", )
+                    .from("comments")
+                    .innerJoin("users", "comments.userId", "users.id")
+                    .then(comment => {
+
+                        console.log(comment);
+
+                        for (let i = 0; i < post.length; i++) {
+
+                            for (let x = 0; x < comment.length; x++) {
+
+                                // console.log("In the for loop inside comments")
+                                // console.log(post[i])
+
+                                if (comment[x].postId === post[i].id) {
+                                    // console.log(`Post username: ${post[i].username}`)
+
+                                    // adds username from posts to 
+                                    // comment[x].username = post[i].username;
+                                    console.log("____________");
+                                    console.log(comment[x]);
+                                    console.log("____________");
+                                    // pushs comment array to the users array
+                                    post[i].comments.push(comment[x]);
+                                }
+                            }
+
+                        }
+                    })
+                    .then(done => {   getLikes();})
+
+            }
+
+            comments();
+
+
+
+   
+
+            async function getLikes(){
 
 
             // how we get likes
             var alllikes = knex.select()
-                .from("likes")
-                .then(likes => {
-                    for (i = 0; i < likes.length; i++) {
+            .from("likes")
+            .then(likes => {
+                for (i = 0; i < likes.length; i++) {
 
 
-                        // for(x =0; i < post.length;)
-                        for (x = 0; x < post.length; x++) {
+                    // for(x =0; i < post.length;)
+                    for (x = 0; x < post.length; x++) {
 
-                            if (likes[i].postId === post[x].id) {
-                                post[x].totalLikes += 1;
-                                // console.log(post[x])
-                            }
+                        if (likes[i].postId === post[x].id) {
+                            post[x].totalLikes += 1;
+                            // console.log(post[x])
                         }
                     }
+                }
 
-                    return response.json(post);
+                console.log("Beginning of the post")
+                console.log(post)
+                console.log("End of the post");
 
-                })
+                return response.json(post);
+
+            })
+            .catch(error => response.status(401).send(error));
+            }
+
+
+          
+
+
 
 
 
@@ -123,6 +153,338 @@ router.get("/", verifyToken, async (request, response) => {
             console.log(error);
             return response.status(401).send("no posts")
         })
+
+
+
+});
+
+
+
+
+
+// /*
+// |--------------------------------------------------------------------------
+// |  Posts Api - Gets posts from all users with all info
+// |--------------------------------------------------------------------------
+// */
+// router.get("/", verifyToken, async (request, response) => {
+
+
+//     // async function getAllPosts(){
+//     //     return await knex.select("posts.id", "users.id AS userId", "username", "photo", "caption", "profilePic")
+//     //     .from("posts")
+//     //     .innerJoin('users', 'posts.user_id', 'users.id')
+//     //     .limit(4)
+//     //     .then(post => {
+
+
+
+//     //         // We use this to add the totalLikes property to each post
+//     //         // We also use this to add an array of comments on each
+//     //         post.forEach((element, index, array) => {
+//     //             element.totalLikes = 0;
+//     //             element.comments = [];
+//     //             element.isSaved = false;
+
+
+//     //         })
+
+
+
+//     //         var savedPost = knex("saved")
+//     //             .where({
+//     //                 userId: request.userId,
+//     //             })
+//     //             .then(savedPost => {
+
+
+
+
+
+//     //                 for (let i = 0; i < savedPost.length; i++) {
+//     //                     for (let x = 0; x < post.length; x++) {
+
+//     //                         if (savedPost[i].postId === post[x].id) {
+//     //                             post[x].isSaved = true;
+//     //                         }
+//     //                     }
+//     //                 }
+
+//     //             })
+//     //             .catch(error => console.log(error))
+
+
+
+
+
+//     //         // get all likes, match it to post, the push in that posts comments array
+//     //         var allComments = knex.select("comments.id", "comment", "users.id As users_id", "username", "postId", )
+//     //             .from("comments")
+//     //             .innerJoin("users", "comments.userId", "users.id")
+//     //             .then(comment => {
+
+//     //                 console.log(comment);
+
+//     //                 for (let i = 0; i < post.length; i++) {
+
+//     //                     for (let x = 0; x < comment.length; x++) {
+
+//     //                         // console.log("In the for loop inside comments")
+//     //                         // console.log(post[i])
+
+//     //                         if (comment[x].postId === post[i].id) {
+//     //                             // console.log(`Post username: ${post[i].username}`)
+
+//     //                             // adds username from posts to 
+//     //                             // comment[x].username = post[i].username;
+//     //                             console.log("____________");
+//     //                             console.log(comment[x]);
+//     //                             console.log("____________");
+//     //                             // pushs comment array to the users array
+//     //                             post[i].comments.push(comment[x]);
+//     //                         }
+//     //                     }
+
+//     //                 }
+//     //             })
+
+
+
+//     //         // how we get likes
+//     //         var alllikes = knex.select()
+//     //             .from("likes")
+//     //             .then(likes => {
+//     //                 for (i = 0; i < likes.length; i++) {
+
+
+//     //                     // for(x =0; i < post.length;)
+//     //                     for (x = 0; x < post.length; x++) {
+
+//     //                         if (likes[i].postId === post[x].id) {
+//     //                             post[x].totalLikes += 1;
+//     //                             // console.log(post[x])
+//     //                         }
+//     //                     }
+//     //                 }
+
+//     //                 console.log("Beginning of the post")
+//     //                 console.log(post)
+//     //                 console.log("End of the post");
+
+//     //                 // return response.json(post);
+//     //                 return post;
+
+//     //             })
+
+
+
+//     //     })
+//     //     .catch(error => {
+//     //         console.log(error);
+//     //         return response.status(401).send("no posts")
+//     //     })
+//     // }
+
+
+//     // response.json(getAllPosts());
+
+
+
+//     await knex.select("posts.id", "users.id AS userId", "username", "photo", "caption", "profilePic")
+//         .from("posts")
+//         .innerJoin('users', 'posts.user_id', 'users.id')
+//         .then(post => {
+
+
+
+//             // We use this to add the totalLikes property to each post
+//             // We also use this to add an array of comments on each
+//             post.forEach((element, index, array) => {
+//                 element.totalLikes = 0;
+//                 element.comments = [];
+//                 element.isSaved = false;
+
+
+//             })
+
+
+
+//             async function saved() {
+//                 var savedPost = await knex("saved")
+//                     .where({
+//                         userId: request.userId,
+//                     })
+//                     .then(savedPost => {
+
+
+
+
+
+//                         for (let i = 0; i < savedPost.length; i++) {
+//                             for (let x = 0; x < post.length; x++) {
+
+//                                 if (savedPost[i].postId === post[x].id) {
+//                                     post[x].isSaved = true;
+//                                 }
+//                             }
+//                         }
+
+//                     })
+//                     .catch(error => console.log(error))
+//             }
+
+//             saved();
+
+
+
+
+
+
+
+
+//             async function comments() {
+
+
+//                 // get all likes, match it to post, the push in that posts comments array
+//                 var allComments = await knex.select("comments.id", "comment", "users.id As users_id", "username", "postId", )
+//                     .from("comments")
+//                     .innerJoin("users", "comments.userId", "users.id")
+//                     .then(comment => {
+
+//                         console.log(comment);
+
+//                         for (let i = 0; i < post.length; i++) {
+
+//                             for (let x = 0; x < comment.length; x++) {
+
+//                                 // console.log("In the for loop inside comments")
+//                                 // console.log(post[i])
+
+//                                 if (comment[x].postId === post[i].id) {
+//                                     // console.log(`Post username: ${post[i].username}`)
+
+//                                     // adds username from posts to 
+//                                     // comment[x].username = post[i].username;
+//                                     console.log("____________");
+//                                     console.log(comment[x]);
+//                                     console.log("____________");
+//                                     // pushs comment array to the users array
+//                                     post[i].comments.push(comment[x]);
+//                                 }
+//                             }
+
+//                         }
+//                     })
+
+//             }
+
+//             comments();
+
+
+
+//             // // how we get likes
+//             // var alllikes = knex.select()
+//             //     .from("likes")
+//             //     .then(likes => {
+//             //         for (i = 0; i < likes.length; i++) {
+
+
+//             //             // for(x =0; i < post.length;)
+//             //             for (x = 0; x < post.length; x++) {
+
+//             //                 if (likes[i].postId === post[x].id) {
+//             //                     post[x].totalLikes += 1;
+//             //                     // console.log(post[x])
+//             //                 }
+//             //             }
+//             //         }
+
+//             //         console.log("Beginning of the post")
+//             //         console.log(post)
+//             //         console.log("End of the post");
+
+//             //         return response.json(post);
+
+//             //     })
+
+
+//             async function getLikes(){
+
+
+//             // how we get likes
+//             var alllikes = knex.select()
+//             .from("likes")
+//             .then(likes => {
+//                 for (i = 0; i < likes.length; i++) {
+
+
+//                     // for(x =0; i < post.length;)
+//                     for (x = 0; x < post.length; x++) {
+
+//                         if (likes[i].postId === post[x].id) {
+//                             post[x].totalLikes += 1;
+//                             // console.log(post[x])
+//                         }
+//                     }
+//                 }
+
+//                 console.log("Beginning of the post")
+//                 console.log(post)
+//                 console.log("End of the post");
+
+//                 return response.json(post);
+
+//             })
+//             .catch(error => response.status(401).send(error));
+//             }
+
+
+//             getLikes();
+
+
+
+
+
+//         })
+//         .catch(error => {
+//             console.log(error);
+//             return response.status(401).send("no posts")
+//         })
+
+
+
+// });
+
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+|  Posts Api - Gets posts from all users with all info
+|--------------------------------------------------------------------------
+*/
+router.get("/test", verifyToken, async (request, response) => {
+
+
+    // Get posts
+
+    // Get likes
+
+    // Get saves
+
+    // Get comments
+
+
+    /*
+    
+        We need to get all posts with the following that matches the post.id
+        - user info
+        - likes
+        - is saved or not
+        - and comments attached to the specific post
+    */
 
 });
 
@@ -145,83 +507,84 @@ router.get("/update/:id", verifyToken, async (request, response) => {
 
     var postId = parseInt(request.params.id);
 
-    await knex.select("posts.id", "users.id AS userId", "username", "photo", "caption", "profilePic")
-        .from("posts")
-        .where("posts.id", postId)
-        .innerJoin("users", "posts.user_id", "users.id")
-        .then(post => {
+
+    //     await knex.select("posts.id", "users.id AS userId", "username", "photo", "caption", "profilePic")
+    //         .from("posts")
+    //         .where("posts.id", postId)
+    //         .innerJoin("users", "posts.user_id", "users.id")
+    //         .then(post => {
 
 
-            post[0].totalLikes = 0;
-            post[0].comments = [];
-            post[0].isSaved = false;
-
-
-
-
-
-
-            // GET savedPost - we need to see if the user has saved this post
-            var savedPost = knex("saved")
-                .where({
-                    userId: request.userId
-                })
-                .then(savedPost => {
-
-                    if (savedPost[0]) {
-                        console.log("burrrr")
-                        post[0].isSaved = true;
-                      
-                    }
-                })
-                .catch(error => console.log(error));
+    //             post[0].totalLikes = 0;
+    //             post[0].comments = [];
+    //             post[0].isSaved = false;
 
 
 
 
 
 
-            // GET comments - we need to get all comments associated with this specific post
-            var comment = knex.select("comments.id", "comment", "users.id AS users_id", "username", "postId")
-                .from("comments")
-                .where("postId", post[0].id)
-                .innerJoin("users", "comments.userId", "users.id")
-                .then(comments => {
+    //             // GET savedPost - we need to see if the user has saved this post
+    //             var savedPost = knex("saved")
+    //                 .where({
+    //                     userId: request.userId
+    //                 })
+    //                 .then(savedPost => {
 
-                    // we push all comments into the comments array on post
-                    comments.forEach((el) => {
-                        post[0].comments.push(el)
-                    })
-                 
-                })
-                .catch(error => console.log(error));
+    //                     if (savedPost[0]) {
+    //                         console.log("burrrr")
+    //                         post[0].isSaved = true;
 
-
+    //                     }
+    //                 })
+    //                 .catch(error => console.log(error));
 
 
 
 
-            // GET likes  - here we need to see how much likes are on the post
-            var likes = knex.select()
-                .from("likes")
-                .where("postId", post[0].id)
-                .then(likes => {
-
-        
-                    likes.forEach(like => {
-                        post[0].totalLikes += 1;
-                    })
-
-                    response.status(200).json(post)
-
-                    
-                })
-                .catch(error => console.log(error))
-    
 
 
-})
-    .catch(error => console.log(error))
+    //             // GET comments - we need to get all comments associated with this specific post
+    //             var comment = knex.select("comments.id", "comment", "users.id AS users_id", "username", "postId")
+    //                 .from("comments")
+    //                 .where("postId", post[0].id)
+    //                 .innerJoin("users", "comments.userId", "users.id")
+    //                 .then(comments => {
+
+    //                     // we push all comments into the comments array on post
+    //                     comments.forEach((el) => {
+    //                         post[0].comments.push(el)
+    //                     })
+
+    //                 })
+    //                 .catch(error => console.log(error));
+
+
+
+
+
+
+    //             // GET likes  - here we need to see how much likes are on the post
+    //             var likes = knex.select()
+    //                 .from("likes")
+    //                 .where("postId", post[0].id)
+    //                 .then(likes => {
+
+
+    //                     likes.forEach(like => {
+    //                         post[0].totalLikes += 1;
+    //                     })
+
+    //                     response.status(200).json(post)
+
+
+    //                 })
+    //                 .catch(error => console.log(error))
+
+
+
+    // })
+    //     .catch(error => console.log(error))
 
 });
 

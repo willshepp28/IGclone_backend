@@ -38,7 +38,12 @@ router.route("/")
             })
             .then((savedPost) => {
 
+                console.log(savedPost.length)
+
+
                 if (savedPost.length === 0) {
+
+                    
 
                     // Save if user has not already saved post
                     console.log("Saved")
