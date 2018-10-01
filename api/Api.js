@@ -47,11 +47,16 @@ router.post("/login", (request, response) => {
             .where({ username: request.body.username, password: decrypt })
             .then(user => {
 
+                console.log(user);
+                console.log(user === 0);
 
 
-                if (user === 0) {
+
+                if (user == false) {
+                    console.log('no users')
                     response.status(401).send("No user")
                 } else {
+                    console.log('issa user')
                     let token = jwt.sign({ user }, process.env.JWT_SECRET)
                     response.status(200).send({ token });
                 }

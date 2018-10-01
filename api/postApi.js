@@ -128,7 +128,7 @@ router.get("/", verifyToken, async (request, response) => {
                             post[x].totalLikes += 1;
                             // console.log(post[x])
                         }
-                    }
+                    }op
                 }
 
                 console.log("Beginning of the post")

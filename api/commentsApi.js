@@ -13,6 +13,8 @@ const router = require('express').Router(),
         
             })
         */
+
+        console.log(request.body);
         
             var comment = knex("comments")
                 .insert({
