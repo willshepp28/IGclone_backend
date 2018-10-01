@@ -14,9 +14,11 @@ const router = require("express").Router(),
 router.get("/postAmount", verifyToken,  (request, response) => {
 
     knex("posts")
-        .where("posts.id", request.userId )
+        .where("posts.user_id", request.userId )
         .count()
-        .then((postsAmount) => { response.status(200).json(postsAmount[0].count)})
+        .then((postsAmount) => { 
+            console.log(postsAmount)
+            response.status(200).json(postsAmount[0].count)})
         .catch(error => console.log(error));
 
 });
