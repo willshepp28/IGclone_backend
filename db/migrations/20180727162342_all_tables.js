@@ -4,7 +4,7 @@ exports.up = function(knex, Promise) {
     .createTable("users", (table) => {
         table.increments();
         table.string("username").notNullable();
-        table.string("profilePic").notNullable().defaultTo("https://www.twistt.net/assets/img/profile-placeholder.png");
+        table.string("profilePic").notNullable().defaultTo("https://s3.us-east-2.amazonaws.com/ig-clone2019/profilePic/profileplaceholder.png");
         table.string("email").notNullable();
         table.text("password").notNullable();
         table.text("phone_number");

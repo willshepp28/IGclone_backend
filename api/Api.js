@@ -19,6 +19,9 @@ let encrypt = (password => {
 });
 
 
+  
+
+
 
 
 router.get("/", (request, response) => {
@@ -37,6 +40,8 @@ router.get("/", (request, response) => {
 
 
 router.post("/login", (request, response) => {
+
+    console.log(request.body)
 
     var decrypt = crypto.pbkdf2Sync(request.body.password, 'salt', 10, 512, 'sha512').toString('base64');
 
@@ -89,7 +94,7 @@ router.post("/signup", (request, response) => {
         .insert({
             username: request.body.username,
             email: request.body.email,
-            password: request.body.password
+            password: encrypt(request.body.password)
         })
         .returning('id')
         .then(user => {
@@ -162,13 +167,30 @@ router.get("/profile/:id", verifyToken, ( request ,response) => {
     var userId = parseInt(request.params.id);
     console.log( request.params.id);
     console.log( userId)
+    console.log(typeof userId)
 
 
-    let user = knex.select("users.id", "username" , "posts.id AS _postId", "photo", "profilePic")
+
+    // let user = knex("users")
+    //     .where("users.id", userId)
+
+
+       // knex.select("posts.id", "users.id AS mainUserId", "photo", "username", "caption", "profilePic")
+    //     .from("posts")
+    //     .where('posts.id', userId)
+    //     .innerJoin("users", "posts.user_id", "users.id")
+
+    // let user = knex.select("users.id", "username" , "posts.id AS _postId", "photo", "profilePic")
+    //     .from("users")
+    //     .where("users.id", userId)
+    //     .innerJoin("posts", "users.id", "posts.user_id")
+
+    let user = knex.select("users.id", "username","profilePic" )
         .from("users")
-        .where('users.id', userId)
-        .innerJoin("posts", "users.id", "posts.user_id")
+        .where("users.id", userId)
         .then( user => {
+
+            console.log(user)
             
             var userData = {
                 username: user[0].username,
@@ -176,11 +198,34 @@ router.get("/profile/:id", verifyToken, ( request ,response) => {
                 posts: []
             };
 
-            for(let i = 0; i < user.length; i++) {
-                userData.posts.push({ postId: user[i]._postId, photo: user[i].photo})
-            } 
 
-            response.status(200).json(userData)}
+            async function getPosts(){
+
+                knex("posts")
+                    .where("posts.id", userId)
+                    .then(posts => {
+
+                        for(var i = 0; i < posts.length; i++) {
+                            userData.posts.push({ postId: user[i].postId, photo: user[i].photo})
+                        }
+
+                    })
+                    .then(done => {
+                        console.log(userData)
+                        response.status(200).json(userData) })
+                    
+            }
+
+            getPosts();
+
+
+            
+
+            // for(let i = 0; i < user.length; i++) {
+            //     userData.posts.push({ postId: user[i]._postId, photo: user[i].photo})
+            // } 
+
+           }
         )
         .catch( error => console.log(error));
 

@@ -460,33 +460,7 @@ router.get("/", verifyToken, async (request, response) => {
 
 
 
-/*
-|--------------------------------------------------------------------------
-|  Posts Api - Gets posts from all users with all info
-|--------------------------------------------------------------------------
-*/
-router.get("/test", verifyToken, async (request, response) => {
 
-
-    // Get posts
-
-    // Get likes
-
-    // Get saves
-
-    // Get comments
-
-
-    /*
-    
-        We need to get all posts with the following that matches the post.id
-        - user info
-        - likes
-        - is saved or not
-        - and comments attached to the specific post
-    */
-
-});
 
 
 
@@ -588,6 +562,29 @@ router.get("/update/:id", verifyToken, async (request, response) => {
 
 });
 
+
+
+/*
+|--------------------------------------------------------------------------
+|   Get all users post for profile/post
+|--------------------------------------------------------------------------
+*/
+router.get("/all/:id", verifyToken, (request, response) => {
+
+    var userId = parseInt(request.params.id);
+
+    knex.select()
+        .from("posts")
+        .where("posts.user_id", userId)
+        .then(user => {
+
+            console.log("this is all/:id")
+            console.log(user);
+            console.log("this is all/:id")
+            response.status(200).json(user)
+        })
+        .catch(error => console.log(error));
+})
 
 
 
