@@ -11,10 +11,14 @@ const router = require("express").Router(),
 |--------------------------------------------------------------------------
 */
 
-router.get("/postAmount", verifyToken,  (request, response) => {
+router.get("/postAmount/:id", verifyToken,  (request, response) => {
+
+    console.log("*********");
+    console.log(request.params.id)
+    console.log("*********");
 
     knex("posts")
-        .where("posts.user_id", request.userId )
+        .where("posts.user_id", request.params.id || request.userId )
         .count()
         .then((postsAmount) => { 
             console.log(postsAmount)
@@ -37,11 +41,11 @@ router.get("/postAmount", verifyToken,  (request, response) => {
     //     table.boolean("accept_request").defaultTo("false");
     // })
 
-router.get("/following", verifyToken, (request, response) => {
+router.get("/following/:id", verifyToken, (request, response) => {
     
     knex("follower")
         .where({
-            followeeId: request.userId,
+            followeeId: request.params.id || request.userId,
             accept_request: true
         })
         .count()
@@ -57,11 +61,11 @@ router.get("/following", verifyToken, (request, response) => {
 */
 
 
-router.get("/follower", verifyToken, (request, response) => {
+router.get("/follower/:id", verifyToken, (request, response) => {
 
     knex("follower")
         .where({
-            followerId: request.userId,
+            followerId: request.params.id || request.userId,
             accept_request: true
         })
         .count()

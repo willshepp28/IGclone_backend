@@ -43,6 +43,7 @@ router.post("/login", (request, response) => {
 
     console.log(request.body)
 
+
     var decrypt = crypto.pbkdf2Sync(request.body.password, 'salt', 10, 512, 'sha512').toString('base64');
 
     if (request.body.username && request.body.password) {
@@ -89,6 +90,7 @@ router.post("/login", (request, response) => {
 router.post("/signup", (request, response) => {
 
     console.log(request.body);
+
 
     var userData = knex("users")
         .insert({
