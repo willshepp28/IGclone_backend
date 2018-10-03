@@ -10,6 +10,7 @@
     cors = require("cors"),
     path = require("path"),
     morgan = require("morgan"),
+    compression = require("compression"),
     Api = require("./api/Api"),
     likesApi = require("./api/likesApi"),
     postApi = require("./api/postApi"),
@@ -31,6 +32,9 @@ application = express();
 |  Middleware
 |--------------------------------------------------------------------------
 */
+
+// install it like expressJS middleware
+application.use(compression());
 
 application.use(morgan('dev'));
 // application.use(morgan('combined'))
