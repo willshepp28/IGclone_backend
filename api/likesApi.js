@@ -24,6 +24,12 @@ const router = require('express').Router()
     
     
     router.post("/", verifyToken, (request, response) => {
+
+
+        console.log("Whats really good")
+
+        console.log(`Request.body.id: ${request.body.id}`);
+        console.log(`Request.userId: ${request.userId}`);
        
     
         var postLike = knex("likes")
@@ -49,7 +55,7 @@ const router = require('express').Router()
                             postId: request.body.id,
                             userId: request.userId
                         })
-                        .then(()=> response.status(200).json("added like"))
+                        .then(()=>   { console.log("added like"), response.status(200).json("added like")})
                         .catch(error => console.log(error));
                 }
     
@@ -65,7 +71,10 @@ const router = require('express').Router()
                         userId: request.userId
                     })
                     .del()
-                    .then(() => response.status(200).json("Deleted like"))
+                    .then(() => {
+                        console.log("deleted like")
+                        response.status(200).json("Deleted like")
+                    })
                     .catch(error => {
                         console.log(error);
                         response.sendStatus(401);
