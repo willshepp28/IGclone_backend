@@ -5,7 +5,7 @@ exports.seed = function(knex, Promise) {
     .then(function () {
       // Inserts seed entries
       return knex('posts').insert([
-        { photo: 'http://maltisudhatravels.com/wp-content/uploads/2015/05/dubai-22.jpg', caption: 'Iam living my life baby', user_id: 1},
+        { photo: 'https://s3.us-east-2.amazonaws.com/ig-clone2019/posts/dubai-22.jpg', caption: 'Iam living my life baby', user_id: 1},
         { photo: 'https://target.scene7.com/is/image/Target/14549692', caption: "I just wanna be the greatest", user_id: 3},
         { photo: 'https://pbs.twimg.com/profile_images/820357473802612736/qGK_QGPM_400x400.jpg', caption: "I wanna travel", user_id: 2},
         { photo: 'https://res.cloudinary.com/teepublic/image/private/s--yLL35BNK--/t_Preview/b_rgb:ffffff,c_limit,f_jpg,h_630,q_90,w_630/v1507153197/production/designs/1949635_0.jpg', caption: "Ready for my full beard to come in, so i can be apart of the beard gang lol.", user_id: 5},

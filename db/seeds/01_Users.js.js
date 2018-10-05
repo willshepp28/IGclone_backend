@@ -17,7 +17,7 @@ exports.seed = function(knex, Promise) {
         { username: 'danny_ballin1', email: 'dannyballin@gmail.com', phone_number: '9996668888', password: encrypt('555')},
         { username: 'sarahlovin5', email: 'sarahzzzworld@yahoo.com', phone_number: '5551238888', password: encrypt('666')},
         { username: 'tommy_rules', profilePic: 'https://www.mumsnet.com/uploads/talk/201610/large-898199-images.jpg', email: 'tombrown@gmail.com', phone_number:'7776663333', password: encrypt('1234')},
-        { username: 'maryjohnson1', profilePic: 'http://rs223.pbsrc.com/albums/dd264/afrodite00/Random%20BW%20People/Cola.jpg~c200', email: 'maryjohnson@gmail.com', phone_number:'2223334444',password: encrypt('1236')}
+        { username: 'maryjohnson1', email: 'maryjohnson@gmail.com', phone_number:'2223334444',password: encrypt('1236')}
       ]);
     });
 };
