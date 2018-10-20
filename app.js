@@ -18,7 +18,7 @@
     followerApi = require("./api/followApi"),
     savedApi = require("./api/saveApi"),
     totalApi = require("./api/totalApi"),
-    discoverApi = require("./api/disoverApi"),
+    discoverApi = require("./api/discoverApi"),
     imageUploadApi = require("./api/imageUploadApi");
     port = process.env.PORT || 3000;
 
