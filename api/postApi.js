@@ -4,7 +4,14 @@ jwt = require('jsonwebtoken'),
     knex = require('../db/knex');
 
 
+// router.get("/discoverPost", (request, response) => {
 
+//     knex.select("id", "photo")
+//     .from("posts")
+//     .orderByRaw("RANDOM()")
+//     .then(post => response.status(200).json(post))
+//     .catch(error => console.log(error));
+// });
 
 /*
 |--------------------------------------------------------------------------
@@ -767,6 +774,7 @@ router.post("/addPost", verifyToken, (request, response) => {
     //     table.timestamp("date_created").defaultTo(knex.fn.now());
     // })
 
+
     knex("posts")
         .insert({
             photo: request.body.photo,
@@ -777,6 +785,19 @@ router.post("/addPost", verifyToken, (request, response) => {
         .catch(error => console.log(error));
 
 });
+
+
+
+// router.get("/discoverPost", (request, response) => {
+
+// // console.log("discover new route")
+// // });
+
+
+// // router.get("/someNew", (request, response) => {
+// //     console.log("something new route")
+// // });
+
 
 
 

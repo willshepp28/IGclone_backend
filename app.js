@@ -18,6 +18,7 @@
     followerApi = require("./api/followApi"),
     savedApi = require("./api/saveApi"),
     totalApi = require("./api/totalApi"),
+    discoverApi = require("./api/disoverApi"),
     imageUploadApi = require("./api/imageUploadApi");
     port = process.env.PORT || 3000;
 
@@ -58,6 +59,7 @@ require('dotenv').config();
 |--------------------------------------------------------------------------
 */
 
+application.use("/api/v1/discover", discoverApi)
 application.use("/api/v1/imageUpload", imageUploadApi );
 application.use("/api/v1/total", totalApi);
 application.use("/api/v1/savedPost", savedApi)

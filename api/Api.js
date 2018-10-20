@@ -114,27 +114,6 @@ router.post("/signup", (request, response) => {
 });
 
 
-// router.get('/posts/:id', verifyToken, (request, response) => {
-
-//     var userId = parseInt(request.params.id);
-
-//     knex.select("posts.id", "users.id AS mainUserId", "photo", "username", "caption", "profilePic")
-//         .from("posts")
-//         .where('posts.id', userId)
-//         .innerJoin("users", "posts.user_id", "users.id")
-//         .then(user => {
-//             response.status(200).json(user)
-//         })
-//         .catch(error => console.log(error));
-
-//     // knex("posts")
-//     //     .where({
-//     //         id: userId
-//     //     })
-//     //     .then(user => response.status(200).json(user))
-//     //     .catch(error => console.log(error));
-// })
-
 
 
 
@@ -263,100 +242,6 @@ router.route("/addPost", verifyToken, (request, response) => {
 
 
 
-router.get("/users", verifyToken, (request, response) => {
-
-    /*
-        Goal: Show logged in user, new users they can follow
-
-        Requirements:
-        - Do not show currently logged in user
-        - Do not show users that the logged in user has either already request, or is currently following
-
-
-           // await knex.select("posts.id", "users.id AS userId", "username", "photo", "caption", "profilePic")
-    //     .from("posts")
-    //     .innerJoin('users', 'posts.user_id', 'users.id')
-    //     .then(post => {
-
-        .createTable("follower", (table) => {
-        table.increments();
-        table.integer("followerId").unsigned().references("id").inTable("users");
-        table.integer("followeeId").unsigned().references("id").inTable("users")
-        table.boolean("accept_request").defaultTo("false");
-    })
-
-
-    */
-
-
-
-    // Get all users that dont have a followeeId attachted to 
-
-    console.log("This is the user route")
-
-
-
-/*
-    This gets all the users, except the logged in user
-
-    Now we just have to exclude the users the loggin in user has either already requested, or currently following
-*/
-    knex.select("id","username", "profilePic")
-        .from("users")
-        .whereNot("id", request.userId)
-        .orderByRaw('RANDOM()')
-        .limit(3)
-        .then(user => {
-
-            var newUsers = [];
-            var limit = 0;
-
-            // if user.id is a match with followeeId we delete from db
-            knex("follower")
-                .whereNot("followeeId", request.userId)
-                .then(follower => {
-
-                    // if users longer tha
-                    
-                    for(let i = 0; i < user.length; i++){
-
-                        if(limit <= 3) {
-                            for(let x = 0; x < follower.length; x++) {
-                            
-                                if(user[i].id !== follower[x].followeeId) {
-                                    newUsers.push(user[i])
-                                    limit++;
-                                    console.log(limit);
-                            }
-                            
-    
-                            }
-                        }
-
-                        
-                    }
-
-                    response.status(200).json(user);
-                })
-                .catch(error => console.log(error));
-
-          
-    
-        })
-        .catch(error =>  console.log(error));
-});
-
-
-
-router.get("/post", (request, response) => {
-
-    knex.select("id", "photo")
-        .from("posts")
-        .orderByRaw("RANDOM()")
-        .then(post => response.status(200).json(post))
-        .catch(error => console.log(error));
-
-});
 
 
 
