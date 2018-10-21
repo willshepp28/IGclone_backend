@@ -33,6 +33,12 @@ router.post("/sendRequest/:followeeId", verifyToken, (request, response) => {
     .catch(error => console.log(error))
 })
 
+
+/*
+|--------------------------------------------------------------------------
+| 
+|--------------------------------------------------------------------------
+*/
 router.route("/:id")
     .get((request, response) => {
        
@@ -46,16 +52,17 @@ router.route("/:id")
             })
 
             .then(follower => {
-                // console.log(follower);
-
                 response.status(200).json(follower)
             })
             .catch(error => console.log(error));
     })
 
 
-
-
+/*
+|--------------------------------------------------------------------------
+| POST - accepts follow requests, made by other users
+|--------------------------------------------------------------------------
+*/
 router.post("/acceptRequest", verifyToken, (request, response) => {
 
     console.log(request.body.id);
@@ -73,7 +80,11 @@ router.post("/acceptRequest", verifyToken, (request, response) => {
 });
 
 
-
+/*
+|--------------------------------------------------------------------------
+| POST - deny follow requests, made by other users
+|--------------------------------------------------------------------------
+*/
 router.post("/denyRequest", verifyToken, (request, response) => {
 
     console.log(request.body.id)
