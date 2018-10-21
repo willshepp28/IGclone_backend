@@ -5,28 +5,16 @@ const router = require("express").Router(),
 
 
 
-// Omelies french bakery
+/**
+ * 
+ *  /api/v1/hash
+ * 
+ * 
+ *      * This is the api to: 
+ *          
+ * 
+ */
 
-router
-    .route("/")
-    get((request, response) => {
-        console.log("Hashtags")
-    })
-    .post((request, response) => {
-        consoe.log("Making the new hashtag");
-    });
-
-
-
-
-router
-    .route("/:id")
-    .get((request, response) => {
-
-    })
-    .post((request, response) => {
-        console.log(response);
-    });
 
 
 

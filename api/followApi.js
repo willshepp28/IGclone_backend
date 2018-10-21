@@ -5,28 +5,34 @@ const router = require("express").Router(),
 
 
 
-// /api/v1/follower
+
+/**
+ * 
+ *  /api/v1/follower
+ * 
+ * 
+ *      * This is the api to:
+ *          -  request to follow another user /api/v1/follower/sendRequest/:followerId
+ *          -  get all the followers that, where the user hasnt accepted their follow request yet /api/v1/follower/:id
+ *          -  used to accept a users request to follow /api/v1/follower/acceptRequest
+ *          -  used to deny a users request to follow /api/v1/follower/denyRequest 
+ *          
+ * 
+ */
+
+
+
+
 
 
 /*
-
-    1. Get all followers
-    2. Request to follow
-    3. Accept a follow request
-    4. Unfollower a person user is following
+|--------------------------------------------------------------------------
+| POST - sent when a user request to follow another user
+| * used in the ExploreComponent and ProfileComponent
+|--------------------------------------------------------------------------
 */
-
-
 router.post("/sendRequest/:followeeId", verifyToken, (request, response) => {
-    /*
-        Goal: User sent a friend request so we will store it in the database
-
-        Dependencies:
-            followeeId = request.params.followerId
-            followerId = request.userId
-
-    */
-
+   
    knex("follower")
     .insert({
         followeeId: parseInt(request.params.followeeId),
@@ -39,7 +45,8 @@ router.post("/sendRequest/:followeeId", verifyToken, (request, response) => {
 
 /*
 |--------------------------------------------------------------------------
-| 
+| GET - we use this to get all the followers that, where the user hasnt accepted their follow request yet.
+|       * this is user in the AppComponent
 |--------------------------------------------------------------------------
 */
 router.route("/:id")
@@ -63,7 +70,8 @@ router.route("/:id")
 
 /*
 |--------------------------------------------------------------------------
-| POST - accepts follow requests, made by other users
+| POST - when another user requests to follow us, we use this to accept their request
+|       * used in the 
 |--------------------------------------------------------------------------
 */
 router.post("/acceptRequest", verifyToken, (request, response) => {
@@ -83,9 +91,13 @@ router.post("/acceptRequest", verifyToken, (request, response) => {
 });
 
 
+
+
+
+
 /*
 |--------------------------------------------------------------------------
-| POST - deny follow requests, made by other users
+| POST - when another user request to follow us, we use this to deny the request
 |--------------------------------------------------------------------------
 */
 router.post("/denyRequest", verifyToken, (request, response) => {

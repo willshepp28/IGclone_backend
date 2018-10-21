@@ -1,7 +1,17 @@
 const express = require("express"),
     jwt = require("jsonwebtoken");
 
-// { JWT_SECRET_KEY } = require('./secret/config');
+
+
+
+/**
+ * 
+ *  
+ *      * We use the verifyToken function to verify the json web token send from the client
+ * 
+ * 
+ */
+
 
 function verifyToken(request, response, next) {
 
@@ -35,35 +45,5 @@ function verifyToken(request, response, next) {
 }
 
 
-
-
-//     // Verify Token
-// module.exports.verifyToken = function ( request, response, next) {
-
-//     // Get auth header value
-//     const bearerHeader = request.headers['authorization'];
-
-//     // Check if bearer is undefined
-//     if( typeof bearerHeader !== 'undefined') {
-
-//         // Split at the space
-//         const bearer = bearerHeader.split(' ');
-
-//         // Get token from array
-//         const bearToken = bearer[1];
-//         request.token = bearToken;
-//         console.log("success")
-//         next();
-
-//     } else {
-        
-//         // Forbidden
-//         response.json({
-//             message: "Permission denied"
-//         })
-//     }
-
-
-// }
 
 module.exports = verifyToken;

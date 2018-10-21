@@ -3,60 +3,75 @@ const router = require('express').Router(),
     verifyToken = require('../helper');
 
 
-// api/v1/comments
 
-
-    router.post("/", verifyToken, (request, response) => {
-        /* 
-            This is where users add comments to posts
-        
-            You will need the user.id from the request.userId
-            And you will need the post.id included in the request.body
-            Then insert the new comment in the database
-        
-            })
-        */
-
-        console.log(request.body);
-        
-            var comment = knex("comments")
-                .insert({
-                    comment: request.body.comment,
-                    userId: request.userId,
-                    postId: request.body.id
-                })
-                .then(() => response.status(200).json("comment added"))
-                .catch(error => console.log(error));
-        });
+/**
+ * 
+ *  /api/v1/comments
+ * 
+ * 
+ *      * This is the api to:
+ *          - creates a comment /api/v1/comments
+ *          - gets all comments on a specific post /api/v1/comments/:id
+ *          
+ * 
+ */
 
 
 
-        
-
-    router.route("/:id")
-        .get((request, response) => {
-            
-            console.log("**********");
-            console.log(request.params.id);
-            console.log("**********");
-
-            var userId = parseInt(request.params.id);
 
 
-            knex.select("posts.id", "comments.id AS commentID", "users.id AS userId", "comment", "username")
-                .from("posts")
-                .where("posts.id", userId)
-                .innerJoin("comments", "posts.id", "comments.postId")
-                .innerJoin("users", "comments.userId", "users.id")
-                .then(comments => { response.status(200).json(comments)})
-                .catch(error => console.log(error));
-            
+/*
+|--------------------------------------------------------------------------
+| POST - creates a new comment on a post
+|       * this is user in the HomeComponent
+|--------------------------------------------------------------------------
+*/
+router.post("/", verifyToken, (request, response) => {
+   
+
+    // you will need the user.id from the request.userId
+    // And you will need the post.id included in the request.body
+    var comment = knex("comments")
+        .insert({
+            comment: request.body.comment,
+            userId: request.userId,
+            postId: request.body.id
         })
-        .post((request, response) => {
+        .then(() => response.status(200).json("comment added"))
+        .catch(error => console.log(error));
+});
 
-        })
-        
-        
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| GET - gets all comments on a specifc post
+|       * this is user in the PostComponent
+|--------------------------------------------------------------------------
+*/
+router.route("/:id")
+    .get((request, response) => {
+
+        var postId = parseInt(request.params.id);
+
+
+        knex.select("posts.id", "comments.id AS commentID", "users.id AS userId", "comment", "username")
+            .from("posts")
+            .where("posts.id", postId)
+            .innerJoin("comments", "posts.id", "comments.postId")
+            .innerJoin("users", "comments.userId", "users.id")
+            .then(comments => { response.status(200).json(comments) })
+            .catch(error => console.log(error));
+
+    })
+    .post((request, response) => {
+
+    })
+
+
 
 
 module.exports = router;

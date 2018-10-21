@@ -16,15 +16,18 @@ const router = require("express").Router(),
 
 
 
-/* 
-    1. Get all saved posts
-    2. Add a saved post
-    3. Delete a saved post
 
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| POST - when the user saves a post
+|       * used in the HomeComponent
+|       * disregard the GET
+|--------------------------------------------------------------------------
 */
-
-
-
 router.route("/")
     .get((request, response) => {
         knex.select()
@@ -83,7 +86,12 @@ router.route("/")
 
 
 
-
+/*
+|--------------------------------------------------------------------------
+| GET- gets all posts a user has saved
+|       * SavedComponent
+|--------------------------------------------------------------------------
+*/
 router.get("/:id", (request, response) => {
 
     var userId = parseInt(request.params.id);

@@ -7,7 +7,19 @@ const router = require("express").Router(),
     knex = require("../db/knex");
 
 
-// /api/v1/imageUpload
+
+/**
+ * 
+ *  /api/v1/imageUpload
+ * 
+ * 
+ *      * This is the api to:
+ *          - creates a new profile pic /api/v1/imageUpload/changeProfile
+ *          - adds the image to AWS-S3, when a user creates a new post /api/v1/imageUpload/newPost
+ *          
+ * 
+ */
+
 
 
 
@@ -74,6 +86,15 @@ function checkFileType(){
 
 
 
+
+
+
+/*
+|--------------------------------------------------------------------------
+| POST - creates a new profile pic
+|       * this is user in the ChangeProfilePicComponent
+|--------------------------------------------------------------------------
+*/
 router.post("/changeProfile", verifyToken, upload.any(), (request, response) => {
 
     /*
@@ -81,15 +102,6 @@ router.post("/changeProfile", verifyToken, upload.any(), (request, response) => 
         2. We upload the image to amazon s3
         3. Then we replace users.profilePic with new image string
     */
-    // knex("users")
-    //     .where("users.id", request.userId)
-    //     .update({
-    //         profilePic: request.files[0].location
-    //     })
-    //     .then(() => response.status(200))
-    //     .catch(() => console.log(error));
-    console.log(request.files[0].location);
-
     var changeProfile = knex('users')
         .where('id', request.userId)
         .update({
@@ -105,6 +117,12 @@ router.post("/changeProfile", verifyToken, upload.any(), (request, response) => 
 
 
 
+/*
+|--------------------------------------------------------------------------
+| POST - when user creates a new post this adds the image to AWS-S3
+|       * this is used in the AddPostComponent
+|--------------------------------------------------------------------------
+*/
 router.post("/newPost", verifyToken, uploadPost.any(), (request, response) => {
     /*
       1. User add a new post
@@ -115,9 +133,6 @@ router.post("/newPost", verifyToken, uploadPost.any(), (request, response) => {
 
 console.log(request.files);
 response.status(200).json(request.files[0].location);
-
-
-
 });
 
 

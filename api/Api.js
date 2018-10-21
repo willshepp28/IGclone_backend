@@ -12,7 +12,6 @@ const router = require("express").Router(),
     knex = require("../db/knex.js");
 
 
-
 let encrypt = (password => {
     return crypto.pbkdf2Sync(password, "salt", 10, 512, "sha512")
         .toString("base64");
@@ -21,9 +20,21 @@ let encrypt = (password => {
 
 
 
-// /api/v1
-  
 
+  
+/**
+ * 
+ *      /api/v1
+ * 
+ * 
+ *      * This is the api to:
+ *          - welome message /api/v1
+ *          - where users login /api/v1/login
+ *          - where users signup /api/v1/signup
+ *          - used to see the specific users profile page information /api/v1/profile/:id
+ *          
+ * 
+ */
 
 
 
@@ -33,21 +44,21 @@ let encrypt = (password => {
 |--------------------------------------------------------------------------
 */
 router.get("/", (request, response) => {
-
     response.status(200).json({ message: "Welcome to IG_Clone API"});
-
-
 });
+
+
+
+
 
 
 /*
 |--------------------------------------------------------------------------
 |  Login Api - Page where users login 
+|       * used in the LoginComponent
 |--------------------------------------------------------------------------
 */
 router.post("/login", (request, response) => {
-
-    console.log(request.body)
 
 
     var decrypt = crypto.pbkdf2Sync(request.body.password, 'salt', 10, 512, 'sha512').toString('base64');
@@ -58,11 +69,6 @@ router.post("/login", (request, response) => {
             .from("users")
             .where({ username: request.body.username, password: decrypt })
             .then(user => {
-
-                console.log(user);
-                console.log(user === 0);
-
-
 
                 if (user == false) {
                     console.log('no users')
@@ -87,16 +93,15 @@ router.post("/login", (request, response) => {
 
 
 
+
 /*
 |--------------------------------------------------------------------------
 |  Signup Api - Page where users login 
+|       * used in the SignupComponent
 |--------------------------------------------------------------------------
 */
 
 router.post("/signup", (request, response) => {
-
-    console.log(request.body);
-
 
     var userData = knex("users")
         .insert({
@@ -111,7 +116,7 @@ router.post("/signup", (request, response) => {
 
             let token = jwt.sign({ user }, process.env.JWT_SECRET)
             let payload = jwt.verify(token, process.env.JWT_SECRET);
-            console.log(payload);
+
             response.status(200).send({ token });
         })
         .catch(error => {
@@ -121,31 +126,12 @@ router.post("/signup", (request, response) => {
 
 
 
-
-
-
-router.post("/comments", verifyToken, (request, response) => {
-/* 
-    This is where users add comments to posts
-
-    You will need the user.id from the request.userId
-    And you will need the post.id included in the request.body
-    Then insert the new comment in the database
-
-    })
+/*
+|--------------------------------------------------------------------------
+| GET - gets one user profile data
+|   * Used in the ProfileComponent
+|--------------------------------------------------------------------------
 */
-
-    var comment = knex("comments")
-        .insert({
-            comment: request.body.comment,
-            userId: request.userId,
-            postId: request.body.id
-        })
-        .then(() => response.status(200).json("comment added"))
-        .catch(error => console.log(error));
-});
-
-
 
 router.get("/profile/:id", verifyToken, ( request ,response) => {
 
@@ -156,21 +142,6 @@ router.get("/profile/:id", verifyToken, ( request ,response) => {
     console.log( userId)
     console.log(typeof userId)
 
-
-
-    // let user = knex("users")
-    //     .where("users.id", userId)
-
-
-       // knex.select("posts.id", "users.id AS mainUserId", "photo", "username", "caption", "profilePic")
-    //     .from("posts")
-    //     .where('posts.id', userId)
-    //     .innerJoin("users", "posts.user_id", "users.id")
-
-    // let user = knex.select("users.id", "username" , "posts.id AS _postId", "photo", "profilePic")
-    //     .from("users")
-    //     .where("users.id", userId)
-    //     .innerJoin("posts", "users.id", "posts.user_id")
 
     let user = knex.select("users.id", "username","profilePic" )
         .from("users")
@@ -205,46 +176,12 @@ router.get("/profile/:id", verifyToken, ( request ,response) => {
 
             getPosts();
 
-
-            
-
-            // for(let i = 0; i < user.length; i++) {
-            //     userData.posts.push({ postId: user[i]._postId, photo: user[i].photo})
-            // } 
-
            }
         )
         .catch( error => console.log(error));
 
 })
 
-
-
-
-router.route("/addPost", verifyToken, (request, response) => {
-
-    /*
-        This route is where the user adds a new post
-
-        DATA MODEL
-             { photo: 'http://maltisudhatravels.com/wp-content/uploads/2015/05/dubai-22.jpg', caption: 'Iam living my life baby', user_id: 1},
-
-        NEEDED
-            photo off of request.body.photo,
-            caption off of request.body.caption
-            userId off of request.userId
-
-    */
-
-    var posts = knex("posts")
-        .insert({
-            photo: request.body.photo,
-            caption: request.body.caption,
-            user_id: request.userId
-        })
-        .then(() => response.status(200) )
-        .catch(error => console.log(error))
-})
 
 
 
