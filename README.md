@@ -7,7 +7,7 @@
 
 This is the api,to own version of instagram.
 
-Check out the application live at http://localhost:4200/login
+Check out the application live at http://localhost:4200/login <br/>
 Check out the front end code at https://github.com/willshepp28/IGclone_frontend
 
 ---
