@@ -4,6 +4,29 @@ const router = require("express").Router(),
     knex = require("../db/knex");
 
 
+
+/**
+ * 
+ *  /api/v1/discover
+ * 
+ * 
+ *      * This is the api to:
+ *          - Helps the user discover new content by displaying new posts /api/v1/discover/posts
+ *          - Suggests new people for the user to potentially follow /api/v1/discover/users
+ *          
+ * 
+ */
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| GET - gets a random set of posts for the user to see
+|       * this is user in the explore component
+|--------------------------------------------------------------------------
+*/
 router.get("/posts", (request, response) => {
 
     knex.select("id", "photo")
@@ -18,6 +41,12 @@ router.get("/posts", (request, response) => {
 
 
 
+/*
+|--------------------------------------------------------------------------
+| GET - gets a random set of people for the user to potentially follower
+|       * this is user in the explore component
+|--------------------------------------------------------------------------
+*/
 router.get("/users", verifyToken, async (request, response) => {
 
     /*
@@ -30,20 +59,6 @@ router.get("/users", verifyToken, async (request, response) => {
  
     */
 
-
-
-    // Get all users that dont have a followeeId attachted to 
-
-    console.log("This is the user route")
-    console.log(typeof request.userId);
-
-
-
-    /*
-        This gets all the users, except the logged in user
-    
-        Now we just have to exclude the users the loggin in user has either already requested, or currently following
-    */
     await knex.select("id", "username", "profilePic")
         .from("users")
         .whereNot("id", request.userId)
@@ -71,11 +86,8 @@ router.get("/users", verifyToken, async (request, response) => {
                                     limit++;
                                     console.log(limit);
                                 }
-
-
                             }
                         }
-
 
                     }
 

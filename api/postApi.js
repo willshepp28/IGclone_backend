@@ -5,9 +5,27 @@ jwt = require('jsonwebtoken'),
 
 
 
+/**
+ * 
+ *      /api/v1/posts
+ * 
+ * 
+ *      * This is the api to get:
+ *          - all the posts with comments, likes, save info attached /api/v1/posts
+ *          - used to get the updated information on one post when user likes or saves post /api/v1/posts/update/:id
+ *          - gets all posts that belong to a specific user /api/v1/posts/all/:id
+ *          - used to get one post /api/v1/posts/:id
+ *          - creates a new post /api/v1/posts/addPost
+ * 
+ */
+
+
+
+
 /*
 |--------------------------------------------------------------------------
-|  Posts Api - Gets posts from all users with all info
+| GET - post from all users
+|       * used in the HomeComponent
 |--------------------------------------------------------------------------
 */
 router.get("/", verifyToken, async (request, response) => {
@@ -33,17 +51,13 @@ router.get("/", verifyToken, async (request, response) => {
             })
 
 
-
+            // gets all saved post and adds them to the corresponding post
             async function saved() {
                 var savedPost = await knex("saved")
                     .where({
                         userId: request.userId,
                     })
                     .then(savedPost => {
-
-
-
-
 
                         for (let i = 0; i < savedPost.length; i++) {
                             for (let x = 0; x < post.length; x++) {
@@ -63,12 +77,8 @@ router.get("/", verifyToken, async (request, response) => {
 
 
 
-
-
-
-
+            // gets all comments and adds them to the corresponding post
             async function comments() {
-
 
                 // get all likes, match it to post, the push in that posts comments array
                 var allComments = await knex.select("comments.id", "comment", "users.id As users_id", "username", "postId", )
@@ -82,17 +92,10 @@ router.get("/", verifyToken, async (request, response) => {
 
                             for (let x = 0; x < comment.length; x++) {
 
-                                // console.log("In the for loop inside comments")
-                                // console.log(post[i])
-
                                 if (comment[x].postId === post[i].id) {
-                                    // console.log(`Post username: ${post[i].username}`)
 
                                     // adds username from posts to 
                                     // comment[x].username = post[i].username;
-                                    console.log("____________");
-                                    console.log(comment[x]);
-                                    console.log("____________");
                                     // pushs comment array to the users array
                                     post[i].comments.push(comment[x]);
                                 }
@@ -110,9 +113,8 @@ router.get("/", verifyToken, async (request, response) => {
 
 
 
-
+            // gets all likes and adds them to the corresponding post
             async function getLikes() {
-
 
                 // how we get likes
                 var alllikes = knex.select()
@@ -131,9 +133,6 @@ router.get("/", verifyToken, async (request, response) => {
                             }
                         }
 
-                        console.log("Beginning of the post")
-                        console.log(post)
-                        console.log("End of the post");
 
                         return response.json(post);
 
@@ -165,23 +164,13 @@ router.get("/", verifyToken, async (request, response) => {
 
 /*
 |--------------------------------------------------------------------------
-|   Get one post for when liked/unlike or saved/unsaved
+|   GET - Get one post for when liked/unlike or saved/unsaved
+|       * we use this to get the updated post when user likes/saves a post
+|       * used in the HomeComponent 
 |--------------------------------------------------------------------------
 */
-
 router.get("/update/:id", verifyToken, async (request, response) => {
 
-    /*
-
-        Get the post with the updated info
-
-        - request.params.id = is the post.id
-    
-    */
-
-    console.log("inside update post id")
-
-    console.log(`Request Params id: ${request.params.id}`)
 
 
     var postId = parseInt(request.params.id);
@@ -204,7 +193,7 @@ router.get("/update/:id", verifyToken, async (request, response) => {
             })
 
 
-
+            // checks to see if user saved the corresponding post
             async function saved() {
                 var savedPost = await knex("saved")
                     .where({
@@ -212,9 +201,6 @@ router.get("/update/:id", verifyToken, async (request, response) => {
                         userId: request.userId,
                     })
                     .then(savedPost => {
-
-
-
 
 
                         for (let i = 0; i < savedPost.length; i++) {
@@ -238,9 +224,8 @@ router.get("/update/:id", verifyToken, async (request, response) => {
 
 
 
-
+            // gets all commnents for the corresponding post
             async function comments() {
-
 
                 // get all likes, match it to post, the push in that posts comments array
                 var allComments = await knex.select("comments.id", "comment", "users.id As users_id", "username", "postId", )
@@ -248,23 +233,15 @@ router.get("/update/:id", verifyToken, async (request, response) => {
                     .innerJoin("users", "comments.userId", "users.id")
                     .then(comment => {
 
-                        console.log(comment);
 
                         for (let i = 0; i < post.length; i++) {
 
                             for (let x = 0; x < comment.length; x++) {
 
-                                // console.log("In the for loop inside comments")
-                                // console.log(post[i])
-
                                 if (comment[x].postId === post[i].id) {
-                                    // console.log(`Post username: ${post[i].username}`)
-
+                                    
                                     // adds username from posts to 
                                     // comment[x].username = post[i].username;
-                                    console.log("____________");
-                                    console.log(comment[x]);
-                                    console.log("____________");
                                     // pushs comment array to the users array
                                     post[i].comments.push(comment[x]);
                                 }
@@ -282,7 +259,7 @@ router.get("/update/:id", verifyToken, async (request, response) => {
 
 
 
-
+            // gets all likes for the corresponding post
             async function getLikes() {
 
 
@@ -298,14 +275,9 @@ router.get("/update/:id", verifyToken, async (request, response) => {
 
                                 if (likes[i].postId === post[x].id) {
                                     post[x].totalLikes += 1;
-                                    // console.log(post[x])
                                 }
                             }
                         }
-
-                        console.log("Beginning of the post")
-                        console.log(post)
-                        console.log("End of the post");
 
                         return response.json(post);
 
@@ -317,83 +289,7 @@ router.get("/update/:id", verifyToken, async (request, response) => {
         .catch(error => { console.log(error) })
 
 
-    //     await knex.select("posts.id", "users.id AS userId", "username", "photo", "caption", "profilePic")
-    //         .from("posts")
-    //         .where("posts.id", postId)
-    //         .innerJoin("users", "posts.user_id", "users.id")
-    //         .then(post => {
-
-
-    //             post[0].totalLikes = 0;
-    //             post[0].comments = [];
-    //             post[0].isSaved = false;
-
-
-
-
-
-
-    //             // GET savedPost - we need to see if the user has saved this post
-    //             var savedPost = knex("saved")
-    //                 .where({
-    //                     userId: request.userId
-    //                 })
-    //                 .then(savedPost => {
-
-    //                     if (savedPost[0]) {
-    //                         console.log("burrrr")
-    //                         post[0].isSaved = true;
-
-    //                     }
-    //                 })
-    //                 .catch(error => console.log(error));
-
-
-
-
-
-
-    //             // GET comments - we need to get all comments associated with this specific post
-    //             var comment = knex.select("comments.id", "comment", "users.id AS users_id", "username", "postId")
-    //                 .from("comments")
-    //                 .where("postId", post[0].id)
-    //                 .innerJoin("users", "comments.userId", "users.id")
-    //                 .then(comments => {
-
-    //                     // we push all comments into the comments array on post
-    //                     comments.forEach((el) => {
-    //                         post[0].comments.push(el)
-    //                     })
-
-    //                 })
-    //                 .catch(error => console.log(error));
-
-
-
-
-
-
-    //             // GET likes  - here we need to see how much likes are on the post
-    //             var likes = knex.select()
-    //                 .from("likes")
-    //                 .where("postId", post[0].id)
-    //                 .then(likes => {
-
-
-    //                     likes.forEach(like => {
-    //                         post[0].totalLikes += 1;
-    //                     })
-
-    //                     response.status(200).json(post)
-
-
-    //                 })
-    //                 .catch(error => console.log(error))
-
-
-
-    // })
-    //     .catch(error => console.log(error))
+    
 
 });
 
@@ -401,7 +297,9 @@ router.get("/update/:id", verifyToken, async (request, response) => {
 
 /*
 |--------------------------------------------------------------------------
-|   Get all users post for profile/post
+|   GET - get all posts of a user by id
+|       * we use this to get all the specific users post
+|       * used in the PostComponent 
 |--------------------------------------------------------------------------
 */
 router.get("/all/:id", verifyToken, (request, response) => {
@@ -427,7 +325,8 @@ router.get("/all/:id", verifyToken, (request, response) => {
 
 /*
 |--------------------------------------------------------------------------
-|   Get one post for /post
+|  GET - gets one post for 
+|       * used in the OnePostComponent 
 |--------------------------------------------------------------------------
 */
 router.get('/:id', verifyToken, (request, response) => {
@@ -451,20 +350,12 @@ router.get('/:id', verifyToken, (request, response) => {
 
 /*
 |--------------------------------------------------------------------------
-|   Get one post
+|   POST - creates a new post
+|       * used in the AddPostComponent 
 |--------------------------------------------------------------------------
 */
 router.post("/addPost", verifyToken, (request, response) => {
-
-
-    // .createTable("posts", (table) => {
-    //     table.increments();
-    //     table.text("photo").notNullable().defaultTo("https://jlfarchitects.com/wp-content/uploads/2015/03/img-placeholder-300x300.jpg");
-    //     table.text("caption").notNullable();
-    //     table.integer("user_id").unsigned().references("id").inTable("users").onDelete("cascade");
-    //     table.timestamp("date_created").defaultTo(knex.fn.now());
-    // })
-
+  
 
     knex("posts")
         .insert({

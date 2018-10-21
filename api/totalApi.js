@@ -4,43 +4,45 @@ const router = require("express").Router(),
     knex = require("../db/knex");
 
 
+/**
+ * 
+ *  /api/v1/total
+ *      * This is the api to get the total amount of:
+ *          - posts a user has made /postAmount/:id
+ *          - followers a user has /following/:id
+ *          - people the user is following /follower/:id
+ * 
+ */
+
+
+
 
 /*
 |--------------------------------------------------------------------------
-| Get the total Amount of posts a user has created
+| GET - get the total Amount of posts a user has created
+|       * used in the profile component
 |--------------------------------------------------------------------------
 */
-
 router.get("/postAmount/:id", verifyToken,  (request, response) => {
-
-    console.log("*********");
-    console.log(request.params.id)
-    console.log("*********");
 
     knex("posts")
         .where("posts.user_id", request.params.id || request.userId )
         .count()
         .then((postsAmount) => { 
-            console.log(postsAmount)
             response.status(200).json(postsAmount[0].count)})
         .catch(error => console.log(error));
 
 });
 
 
+
+
 /*
 |--------------------------------------------------------------------------
-| Get the total amount of people following the current user
+| GET - the total amount of logging in users followers
+|        * used in the profile component
 |--------------------------------------------------------------------------
 */
-
-    // .createTable("follower", (table) => {
-    //     table.increments();
-    //     table.integer("followerId").unsigned().references("id").inTable("users");
-    //     table.integer("followeeId").unsigned().references("id").inTable("users")
-    //     table.boolean("accept_request").defaultTo("false");
-    // })
-
 router.get("/following/:id", verifyToken, (request, response) => {
     
     knex("follower")
@@ -54,13 +56,13 @@ router.get("/following/:id", verifyToken, (request, response) => {
 });
 
 
+
 /*
 |--------------------------------------------------------------------------
-| Get the total amount of people the current user is following
+| GET - the total amount of people the user is following
+|        * used in the profile component
 |--------------------------------------------------------------------------
 */
-
-
 router.get("/follower/:id", verifyToken, (request, response) => {
 
     knex("follower")

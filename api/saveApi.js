@@ -4,6 +4,17 @@ const router = require("express").Router(),
     knex = require("../db/knex");
 
 
+/**
+ * 
+ *  /api/v1/savedPost
+ *      * This is the api to:
+ *          - get all posts a user has saved /api/v1/savedPost
+ *          - followers a user has /following/:id
+ *          - people the user is following /follower/:id
+ * 
+ */
+
+
 
 /* 
     1. Get all saved posts
@@ -12,11 +23,7 @@ const router = require("express").Router(),
 
 */
 
-// .createTable("savedPost", (table) => {
-//     table.increments();
-//     table.integer("userId").unsigned().references("id").inTable("users");
-//     table.integer("postId").unsigned().references("id").inTable("posts");
-// })
+
 
 router.route("/")
     .get((request, response) => {
@@ -71,14 +78,6 @@ router.route("/")
             })
             .catch(error => console.log(error))
 
-
-        // knex("saved")
-        //     .insert({
-        //         userId: request.userId,
-        //         postId: request.body.id
-        //     })
-        //     .then(() => response.status(200).json({ message: "Successfully saved post"}))
-        //     .catch(error => console.log(error));
 
     })
 

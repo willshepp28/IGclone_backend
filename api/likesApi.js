@@ -4,7 +4,7 @@ const router = require('express').Router()
     knex = require('../db/knex');
 
 
-
+// /api/v1/likes
 
     router.get("/", (request, response) => {
 

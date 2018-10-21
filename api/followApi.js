@@ -5,6 +5,9 @@ const router = require("express").Router(),
 
 
 
+// /api/v1/follower
+
+
 /*
 
     1. Get all followers

@@ -19,14 +19,22 @@ let encrypt = (password => {
 });
 
 
+
+
+// /api/v1
   
 
 
 
 
+/*
+|--------------------------------------------------------------------------
+|  Welcome page
+|--------------------------------------------------------------------------
+*/
 router.get("/", (request, response) => {
 
-    var decrypt = crypto.pbkdf2Sync("123", 'salt', 10, 512, 'sha512').toString('base64');
+    response.status(200).json({ message: "Welcome to IG_Clone API"});
 
 
 });
@@ -37,8 +45,6 @@ router.get("/", (request, response) => {
 |  Login Api - Page where users login 
 |--------------------------------------------------------------------------
 */
-
-
 router.post("/login", (request, response) => {
 
     console.log(request.body)

@@ -5,7 +5,9 @@ const router = require("express").Router(),
     jwt = require("jsonwebtoken"),
     verifyToken = require("../helper"),
     knex = require("../db/knex");
-    // { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = require("../secret/aws-config");
+
+
+// /api/v1/imageUpload
 
 
 

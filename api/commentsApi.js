@@ -3,6 +3,9 @@ const router = require('express').Router(),
     verifyToken = require('../helper');
 
 
+// api/v1/comments
+
+
     router.post("/", verifyToken, (request, response) => {
         /* 
             This is where users add comments to posts
@@ -38,15 +41,6 @@ const router = require('express').Router(),
             console.log("**********");
 
             var userId = parseInt(request.params.id);
-
-            // knex.select("posts.id", "users.id AS mainUserId", "photo", "username", "caption", "profilePic")
-            //     .from("posts")
-            //     .where('posts.id', userId)
-            //     .innerJoin("users", "posts.user_id", "users.id")
-            //     .then(user => {
-            //         response.status(200).json(user)
-            //     })
-            //     .catch(error => console.log(error));
 
 
             knex.select("posts.id", "comments.id AS commentID", "users.id AS userId", "comment", "username")
