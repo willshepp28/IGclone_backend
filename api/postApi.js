@@ -356,6 +356,7 @@ router.get('/:id', verifyToken, (request, response) => {
 */
 router.post("/addPost", verifyToken, (request, response) => {
   
+    
 
     knex("posts")
         .insert({

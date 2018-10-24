@@ -12,6 +12,7 @@
     morgan = require("morgan"),
     compression = require("compression"),
     Api = require("./api/Api"),
+    hashApi = require("./api/hashtagApi"),
     likesApi = require("./api/likesApi"),
     postApi = require("./api/postApi"),
     commentsApi = require("./api/commentsApi"),
@@ -58,7 +59,8 @@ require('dotenv').config();
 | Api
 |--------------------------------------------------------------------------
 */
-application.use("/api/v1/discover", discoverApi)
+application.use("/api/v1/hash", hashApi);
+application.use("/api/v1/discover", discoverApi);
 application.use("/api/v1/imageUpload", imageUploadApi );
 application.use("/api/v1/total", totalApi);
 application.use("/api/v1/savedPost", savedApi)
