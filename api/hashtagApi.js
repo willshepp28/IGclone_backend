@@ -34,8 +34,10 @@ router.get("/:name", async(request, response) => {
                     .innerJoin("hash_posts", "hashtags.id", "hash_posts.hashId")
                     .innerJoin("posts", "hash_posts.postId", "posts.id")
                     .then(posts => {
-                        console.log(posts);
-                        response.json(posts);
+
+                       console.log(posts[0])
+                        
+                        response.json(posts, );
                     })
                     .catch(error => { console.log(error)})
 
