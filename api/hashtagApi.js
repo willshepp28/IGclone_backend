@@ -26,11 +26,13 @@ router.get("/:name", async(request, response) => {
    * 
    */
 
+   console.log(request.params);
+
    var hashtag = await knex.select("posts.id","posts.photo")
                     .from("hashtags")
                     .where("name", "#" + request.params.name)
                     .innerJoin("hash_posts", "hashtags.id", "hash_posts.hashId")
-                    .innerJoin("posts", "hash_posts.hashId", "posts.id")
+                    .innerJoin("posts", "hash_posts.postId", "posts.id")
                     .then(posts => {
                         console.log(posts);
                         response.json(posts);
