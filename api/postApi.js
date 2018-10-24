@@ -364,7 +364,8 @@ router.post("/addPost", verifyToken, (request, response) => {
             caption: request.body.caption,
             user_id: request.userId
         })
-        .then(() => response.status(200).json({ message: "Successfully added a new post" }))
+        .returning("*")
+        .then((postId) => { response.status(200).json(postId)} )
         .catch(error => console.log(error));
 
 });
