@@ -59,7 +59,7 @@ require('dotenv').config();
 | Api
 |--------------------------------------------------------------------------
 */
-application.use("/api/v1/hash", hashApi);
+// application.use("/api/v1/hash", hashApi);
 application.use("/api/v1/discover", discoverApi);
 application.use("/api/v1/imageUpload", imageUploadApi );
 application.use("/api/v1/total", totalApi);
