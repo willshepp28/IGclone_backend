@@ -54,5 +54,5 @@ exports.up = function(knex, Promise) {
 };
 
 exports.down = function(knex, Promise) {
-    return knex.schema.dropTable("hash_posts").dropTable("hashtags").dropTable("saved").dropTable("comments").dropTable("likes").dropTable("posts").dropTable("follower").dropTable("users");
+    return knex.schema.dropTable("saved").dropTable("comments").dropTable("likes").dropTable("posts").dropTable("follower").dropTable("users");
 };
