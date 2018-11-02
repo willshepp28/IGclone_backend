@@ -7,16 +7,9 @@
 const router = require("express").Router(),
     jwt = require("jsonwebtoken"),
     { JWT_SECRET_KEY } = require('../secret/config'),
-    { signupUser } = require("../db/query/authQuery"),
+    { signupUser, loginUser } = require("../db/query/authQuery"),
     verifyToken = require("../helper"),
-    crypto = require("crypto"),
     knex = require("../db/knex.js");
-
-
-let encrypt = (password => {
-    return crypto.pbkdf2Sync(password, "salt", 10, 512, "sha512")
-        .toString("base64");
-});
 
 
 
@@ -62,13 +55,10 @@ router.get("/", (request, response) => {
 router.post("/login", (request, response) => {
 
 
-    var decrypt = crypto.pbkdf2Sync(request.body.password, 'salt', 10, 512, 'sha512').toString('base64');
 
     if (request.body.username && request.body.password) {
 
-        let user = knex.select()
-            .from("users")
-            .where({ username: request.body.username, password: decrypt })
+        await loginUser(request.body.username, request.body.password)
             .then(user => {
 
                 if (user == false) {

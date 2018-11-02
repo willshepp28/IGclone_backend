@@ -29,10 +29,19 @@ function signupUser(username, email, password){
 }
 
 
+/*
+|--------------------------------------------------------------------------
+| QUERY - POST checks if user exists in the database
+|--------------------------------------------------------------------------
+*/
+function loginUser(username, password){
+    return Authentication().where({ username: username, password: encrypt(password)})
+}
 
 
 
 
 module.exports = {
-    signupUser: signupUser
+    signupUser: signupUser,
+    loginUser: loginUser
 };
