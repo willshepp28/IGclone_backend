@@ -5,8 +5,8 @@ exports.seed = function(knex, Promise) {
     .then(function () {
       // Inserts seed entries
       return knex('hash_posts').insert([
-        { hashId: 1, postId: 1},
-        { hashId: 1, postId: 3}
+        // { hashId: 1, postId: 1},
+        // { hashId: 1, postId: 3}
       ]);
     });
 };

@@ -41,18 +41,18 @@ exports.up = function(knex, Promise) {
         table.integer("userId").unsigned().references("id").inTable("users");
         table.integer("postId").unsigned().references("id").inTable("posts");
     })
-    // .createTable("hashtags", (table) => {
-    //     table.increments();
-    //     table.string("name").notNullable();
+    .createTable("hashtags", (table) => {
+        table.increments();
+        table.string("name").notNullable();
 
-    // })
-    // .createTable("hash_posts", (table) => {
-    //     table.increments();
-    //     table.integer("hashId").unsigned().references("id").inTable("hashtags");
-    //     table.integer("postId").unsigned().references("id").inTable("posts");
-    // })
+    })
+    .createTable("hash_posts", (table) => {
+        table.increments();
+        table.integer("hashId").unsigned().references("id").inTable("hashtags");
+        table.integer("postId").unsigned().references("id").inTable("posts");
+    })
 };
 
 exports.down = function(knex, Promise) {
-    return knex.schema.dropTable("saved").dropTable("comments").dropTable("likes").dropTable("posts").dropTable("follower").dropTable("users");
+    return knex.schema.dropTable("hash_posts").dropTable("hashtags").dropTable("saved").dropTable("comments").dropTable("likes").dropTable("posts").dropTable("follower").dropTable("users");
 };
