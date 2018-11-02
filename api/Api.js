@@ -7,6 +7,7 @@
 const router = require("express").Router(),
     jwt = require("jsonwebtoken"),
     { JWT_SECRET_KEY } = require('../secret/config'),
+    { signupUser } = require("../db/query/authQuery"),
     verifyToken = require("../helper"),
     crypto = require("crypto"),
     knex = require("../db/knex.js");
@@ -101,23 +102,13 @@ router.post("/login", (request, response) => {
 |--------------------------------------------------------------------------
 */
 
-router.post("/signup", (request, response) => {
+router.post("/signup", async(request, response) => {
 
-    var userData = knex("users")
-        .insert({
-            username: request.body.username,
-            email: request.body.email,
-            password: encrypt(request.body.password)
-        })
-        .returning('id')
+   await signupUser(request.body.username, request.body.email, request.body.password)
+        .returning("*")
         .then(user => {
-
             console.log(user);
-
-            let token = jwt.sign({ user }, process.env.JWT_SECRET)
-            let payload = jwt.verify(token, process.env.JWT_SECRET);
-
-            response.status(200).send({ token });
+            response.status(200).json({ message: "Successfully Signed Up!"})
         })
         .catch(error => {
             console.log(error);
