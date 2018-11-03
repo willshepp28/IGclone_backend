@@ -15,7 +15,7 @@ exports.up = function(knex, Promise) {
         table.increments();
         table.text("photo").notNullable().defaultTo("https://jlfarchitects.com/wp-content/uploads/2015/03/img-placeholder-300x300.jpg");
         table.text("caption").notNullable();
-        table.integer("user_id").unsigned().references("id").inTable("users").onDelete("cascade");
+        table.integer("user_id").unsigned().references("id").inTable("users")
         table.timestamp("date_created").defaultTo(knex.fn.now());
     })
     .createTable("likes", ( table) => {
@@ -41,16 +41,16 @@ exports.up = function(knex, Promise) {
         table.integer("userId").unsigned().references("id").inTable("users");
         table.integer("postId").unsigned().references("id").inTable("posts");
     })
-    .createTable("hashtags", (table) => {
-        table.increments();
-        table.string("name").notNullable();
+    // .createTable("hashtags", (table) => {
+    //     table.increments();
+    //     table.string("name").notNullable();
 
-    })
-    .createTable("hash_posts", (table) => {
-        table.increments();
-        table.integer("hashId").unsigned().references("id").inTable("hashtags");
-        table.integer("postId").unsigned().references("id").inTable("posts");
-    })
+    // })
+    // .createTable("hash_posts", (table) => {
+    //     table.increments();
+    //     table.integer("hashId").unsigned().references("id").inTable("hashtags");
+    //     table.integer("postId").unsigned().references("id").inTable("posts");
+    // })
 };
 
 exports.down = function(knex, Promise) {
